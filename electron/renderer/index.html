@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArepaStock — Inventario y Punto de Venta</title>
+  <link rel="stylesheet" href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
+  <link rel="stylesheet" href="../../node_modules/sweetalert2/dist/sweetalert2.min.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body
+  data-theme="claro"
+  data-vision="normal"
+  data-font-scale="100"
+  data-reduce-motion="false"
+  data-underline-links="false"
+>
+
+  <!-- ========== HEADER ========== -->
+  <header class="app-header glass">
+    <h1 class="app-title">
+      <i class="fas fa-utensils" aria-hidden="true"></i>
+      <span>ArepaStock</span>
+    </h1>
+    <div class="header-actions">
+      <!-- Botón accesibilidad -> dropdown -->
+      <button
+        id="btn-accesibilidad"
+        class="btn-icon glass"
+        type="button"
+        aria-label="Abrir panel de accesibilidad visual"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="a11y-panel"
+      >
+        <i class="fas fa-universal-access" aria-hidden="true"></i>
+      </button>
+      <!-- Botón notificaciones -> dropdown con badge -->
+      <button
+        id="btn-notificaciones"
+        class="btn-icon glass notif-trigger position-relative"
+        type="button"
+        aria-label="Ver notificaciones"
+        title="Notificaciones"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="notificaciones-panel"
+      >
+        <i class="fas fa-bell" aria-hidden="true"></i>
+        <span id="badge-notificaciones" class="notif-badge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== OVERLAYS (uno por dropdown) ========== -->
+  <div id="overlay-accesibilidad" class="overlay" hidden></div>
+  <div id="overlay-notificaciones" class="overlay" hidden></div>
+
+  <!-- ========== CUERPO ========== -->
+  <div class="app-body glass">
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar glass" id="sidebar">
+      <nav aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item active" type="button" data-view="productos" aria-pressed="true">
+              <i class="fas fa-boxes" aria-hidden="true"></i>
+              <span>Productos</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" type="button" data-view="pos" aria-pressed="false">
+              <i class="fas fa-cash-register" aria-hidden="true"></i>
+              <span>Punto de Venta</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" type="button" data-view="movimientos" aria-pressed="false">
+              <i class="fas fa-history" aria-hidden="true"></i>
+              <span>Movimientos</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ========== CONTENT ========== -->
+    <main id="content" class="content glass" data-view="productos">
+
+      <!-- View: Productos -->
+      <section id="view-productos" class="view active glass" aria-labelledby="titulo-productos">
+        <div class="view-header glass">
+          <h2 id="titulo-productos">Catálogo de Productos</h2>
+          <button id="btn-crear-producto" class="btn btn-primary glass" type="button">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+            <span>Nuevo producto</span>
+          </button>
+        </div>
+        <div class="table-container glass">
+          <table class="table-products glass">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Producto</th>
+                <th>Descripción</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- View: Punto de Venta -->
+      <section id="view-pos" class="view" hidden aria-labelledby="titulo-pos">
+        <div class="view-header glass">
+          <h2 id="titulo-pos">Punto de Venta</h2>
+        </div>
+        <div class="pos-grid glass">
+          <div class="pos-products glass" id="pos-products"></div>
+          <div class="pos-cart glass">
+            <h3>Carrito</h3>
+            <ul id="cart-items" class="cart-items glass"></ul>
+            <p id="cart-total">Total: $0.00</p>
+            <button id="btn-register-sale" class="btn btn-primary glass" type="button">
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
+              <span>Registrar venta</span>
+            </button>
+            <button id="btn-clear-cart" class="btn glass" type="button">
+              <i class="fas fa-trash" aria-hidden="true"></i>
+              <span>Limpiar carrito</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- View: Movimientos -->
+      <section id="view-movimientos" class="view" hidden aria-labelledby="titulo-movimientos">
+        <div class="view-header glass">
+          <h2 id="titulo-movimientos">Movimientos de Inventario</h2>
+        </div>
+        <div class="table-container glass">
+          <table class="table-movements glass">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>SKU</th>
+                <th>Cantidad</th>
+                <th>Stock anterior</th>
+                <th>Stock resultante</th>
+                <th>Motivo</th>
+                <th>Referencia</th>
+              </tr>
+            </thead>
+            <tbody id="movements-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="app-footer glass">
+    <p id="footer-status">ArepaStock · API local: 127.0.0.1:8000 · Glassmode activado</p>
+  </footer>
+
+  <!-- ========== DROPDOWN: ACCESIBILIDAD (anclado al header) ========== -->
+  <div id="a11y-panel" class="dropdown-panel glass" hidden role="menu" aria-labelledby="a11y-panel-title"></div>
+
+  <!-- ========== DROPDOWN: NOTIFICACIONES (anclado al header) ========== -->
+  <div id="notificaciones-panel" class="dropdown-panel glass" hidden role="region" aria-label="Notificaciones"></div>
+
+  <script src="../../node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dropdown.js"></script>
+  <script src="js/accessibility.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

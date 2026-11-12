@@ -1,0 +1,770 @@
+/* ========================================================================
+   ArepaStock — Temas, Glassmode y Accesibilidad
+   ======================================================================== */
+
+/* ---------- Tokens base (tema claro / marca) ---------- */
+:root {
+  /* Colores base */
+  --color-bg: #fbf6ee;
+  --color-surface: rgba(255, 255, 255, 0.65);
+  --color-surface-alt: rgba(243, 231, 210, 0.55);
+  --color-border: rgba(216, 179, 138, 0.5);
+  --color-text: #4a3728;
+  --color-text-muted: #7a644d;
+  --color-primary: #c96f2e;
+  --color-primary-hover: #b35e25;
+  --color-success: #2e7d32;
+  --color-danger: #b32d2d;
+  --color-warning: #c96f2e;
+  --color-link: #1a56db;
+
+  /* Glassmode */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+
+  --radius: 12px;
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---------- Reset y base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------- Glassmode global ---------- */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+}
+
+/* ---------- Estructura semántica ---------- */
+.app-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text);
+}
+
+.app-title i {
+  color: var(--color-primary);
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius);
+  padding: 0.45rem;
+  cursor: pointer;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ---------- Cuerpo y Sidebar ---------- */
+.app-body {
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
+
+.sidebar {
+  width: 280px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(200%);
+  -webkit-backdrop-filter: blur(16px) saturate(200%);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  box-shadow: var(--glass-shadow);
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background: var(--color-surface-alt);
+  border-color: var(--color-primary);
+}
+
+.nav-item.active {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.nav-item.active i {
+  color: #ffffff;
+}
+
+.nav-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.sidebar-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--color-text-muted);
+}
+
+.select-theme {
+  width: 100%;
+  padding: 0.55rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.daltonism-group {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  background: var(--color-surface-alt);
+}
+
+.daltonism-group legend {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+  width: auto;
+}
+
+.daltonism-group label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+/* ---------- Content principal ---------- */
+.content {
+  flex: 1;
+  padding: 1.75rem;
+  overflow-y: auto;
+  background: var(--glass-bg);
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.35rem;
+  color: var(--color-text);
+}
+
+/* ---------- Tablas ---------- */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+th, td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+th {
+  background: var(--color-surface-alt);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--color-border);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: var(--color-surface-alt);
+}
+
+code {
+  background: rgba(0,0,0,0.05);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: var(--color-primary);
+}
+
+/* ---------- Acciones de tabla ---------- */
+.acciones {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-icon {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius);
+  padding: 0.45rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ---------- Punto de venta ---------- */
+.pos-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1.75rem;
+  margin-top: 1rem;
+}
+
+.pos-products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.pos-product-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pos-product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--glass-shadow);
+  border-color: var(--color-primary);
+}
+
+.pos-product-card i {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: 0.2rem;
+}
+
+.pos-product-card strong {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.pos-product-card .stock {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.pos-product-card .precio {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}
+
+.pos-cart {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--glass-shadow);
+  height: fit-content;
+}
+
+.pos-cart h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+}
+
+.cart-items {
+  list-style: none;
+  margin: 0 0 0.75rem 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-alt);
+}
+
+.cart-item {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#cart-total {
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  margin: 0.75rem 0 0 0;
+  text-align: right;
+}
+
+.btn {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- Footer ---------- */
+.app-footer {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border-top: 1px solid var(--color-border);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: auto;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+/* ---------- Notificaciones y pop-ups (SweetAlert2 complemento) ---------- */
+.swal2-title, .swal2-content, .swal2-confirm, .swal2-cancel, .swal2-deny {
+  font-family: var(--font);
+}
+
+.swal2-title {
+  color: var(--color-text) !important;
+}
+
+.swal2-container.swal2-shown .swal2-title {
+  color: var(--color-text) !important;
+}
+
+.swal2-popup {
+  background: var(--color-surface) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+.a11y-toast .swal2-title {
+  color: var(--color-text) !important;
+}
+
+/* ---------- Información crítica sin depender del color ---------- */
+.stock-bajo {
+  position: relative;
+  font-weight: 700;
+  color: var(--color-danger);
+}
+
+.stock-bajo::before {
+  content: "⚠";
+  margin-right: 0.35rem;
+  font-weight: 900;
+}
+
+.stock-ok {
+  color: var(--color-success);
+}
+
+.stock-ok::before {
+  content: "✓";
+  margin-right: 0.35rem;
+  font-weight: 900;
+}
+
+/* ========================================================================
+   12 TEMAS DE COLOR
+   ======================================================================== */
+
+/* 1. Claro (base) ya definido en :root */
+
+/* 2. Oscuro */
+[data-theme="oscuro"] {
+  --color-bg: #1a1816;
+  --color-surface: rgba(45, 40, 35, 0.7);
+  --color-surface-alt: rgba(58, 51, 44, 0.6);
+  --color-border: rgba(110, 93, 75, 0.5);
+  --color-text: #e7dccf;
+  --color-text-muted: #a89580;
+  --color-primary: #e08c4c;
+  --color-primary-hover: #c97a3e;
+  --color-success: #69bb6a;
+  --color-danger: #d17b7b;
+  --color-warning: #e08c4c;
+  --color-link: #7ea0e3;
+  --glass-bg: rgba(45, 40, 35, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* 3. Alto contraste */
+[data-theme="alto-contraste"] {
+  --color-bg: #000000;
+  --color-surface: rgba(17, 17, 17, 0.85);
+  --color-surface-alt: rgba(33, 33, 33, 0.8);
+  --color-border: #ffffff;
+  --color-text: #ffffff;
+  --color-text-muted: #cccccc;
+  --color-primary: #ffff00;
+  --color-primary-hover: #cccc00;
+  --color-success: #00ff00;
+  --color-danger: #ff0000;
+  --color-warning: #ffff00;
+  --color-link: #00ffff;
+  --glass-bg: rgba(0, 0, 0, 0.85);
+  --glass-border: #ffffff;
+  --glass-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* 4. Cálido (maíz/arepa) */
+[data-theme="cálido"] {
+  --color-bg: #fdf4e3;
+  --color-surface: rgba(255, 251, 241, 0.7);
+  --color-surface-alt: rgba(251, 227, 199, 0.6);
+  --color-border: rgba(216, 159, 91, 0.5);
+  --color-text: #6f3a0a;
+  --color-text-muted: #9b5c2a;
+  --color-primary: #c76b1e;
+  --color-primary-hover: #a85c19;
+  --color-success: #5a8a42;
+  --color-danger: #a43e3e;
+  --color-warning: #c76b1e;
+  --color-link: #1f4e33;
+  --glass-bg: rgba(255, 251, 241, 0.65);
+  --glass-border: rgba(216, 159, 91, 0.4);
+}
+
+/* 5. Frío (verdes/azules) */
+[data-theme="frío"] {
+  --color-bg: #eef6f4;
+  --color-surface: rgba(255, 255, 255, 0.7);
+  --color-surface-alt: rgba(220, 235, 233, 0.6);
+  --color-border: rgba(168, 199, 196, 0.5);
+  --color-text: #2f4a48;
+  --color-text-muted: #5a807c;
+  --color-primary: #1f7a6d;
+  --color-primary-hover: #196358;
+  --color-success: #2c7e59;
+  --color-danger: #a43e3e;
+  --color-warning: #1f7a6d;
+  --color-link: #14532d;
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(168, 199, 196, 0.4);
+}
+
+/* 6. Neón */
+[data-theme="neón"] {
+  --color-bg: #0a0a0c;
+  --color-surface: rgba(20, 20, 25, 0.8);
+  --color-surface-alt: rgba(35, 35, 45, 0.7);
+  --color-border: rgba(0, 255, 255, 0.4);
+  --color-text: #00ffff;
+  --color-text-muted: #88cccc;
+  --color-primary: #00ff00;
+  --color-primary-hover: #00cc00;
+  --color-success: #00ff00;
+  --color-danger: #ff0055;
+  --color-warning: #ffff00;
+  --color-link: #ff00ff;
+  --glass-bg: rgba(20, 20, 25, 0.75);
+  --glass-border: rgba(0, 255, 255, 0.3);
+  --glass-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+}
+
+/* 7. Pastel */
+[data-theme="pastel"] {
+  --color-bg: #fdf2f8;
+  --color-surface: rgba(253, 242, 248, 0.7);
+  --color-surface-alt: rgba(249, 231, 239, 0.6);
+  --color-border: rgba(232, 121, 249, 0.4);
+  --color-text: #831843;
+  --color-text-muted: #be185d;
+  --color-primary: #db2777;
+  --color-primary-hover: #be185d;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-link: #8b5cf6;
+  --glass-bg: rgba(253, 242, 248, 0.65);
+  --glass-border: rgba(232, 121, 249, 0.3);
+}
+
+/* 8. Sepia / Vintage */
+[data-theme="sepia"] {
+  --color-bg: #f3e5ab;
+  --color-surface: rgba(243, 229, 171, 0.7);
+  --color-surface-alt: rgba(222, 184, 135, 0.6);
+  --color-border: rgba(160, 120, 80, 0.5);
+  --color-text: #5c4033;
+  --color-text-muted: #8b6b50;
+  --color-primary: #8b5e3c;
+  --color-primary-hover: #6d4830;
+  --color-success: #4a6741;
+  --color-danger: #a43e3e;
+  --color-warning: #b8860b;
+  --color-link: #4a6741;
+  --glass-bg: rgba(243, 229, 171, 0.65);
+  --glass-border: rgba(160, 120, 80, 0.4);
+}
+
+/* 9. Bosque / Naturaleza */
+[data-theme="bosque"] {
+  --color-bg: #f0f7f0;
+  --color-surface: rgba(240, 247, 240, 0.7);
+  --color-surface-alt: rgba(220, 230, 220, 0.6);
+  --color-border: rgba(76, 153, 76, 0.4);
+  --color-text: #2d5a2d;
+  --color-text-muted: #4a7c4a;
+  --color-primary: #4a7c4a;
+  --color-primary-hover: #3d663d;
+  --color-success: #2d5a2d;
+  --color-danger: #b32d2d;
+  --color-warning: #b8860b;
+  --color-link: #1b5e20;
+  --glass-bg: rgba(240, 247, 240, 0.65);
+  --glass-border: rgba(76, 153, 76, 0.3);
+}
+
+/* 10. Océano */
+[data-theme="océano"] {
+  --color-bg: #e0f2f1;
+  --color-surface: rgba(224, 242, 241, 0.7);
+  --color-surface-alt: rgba(198, 219, 218, 0.6);
+  --color-border: rgba(69, 123, 157, 0.4);
+  --color-text: #004d40;
+  --color-text-muted: #26a69a;
+  --color-primary: #00838f;
+  --color-primary-hover: #006064;
+  --color-success: #00bfa5;
+  --color-danger: #d32f2f;
+  --color-warning: #ffb300;
+  --color-link: #0288d1;
+  --glass-bg: rgba(224, 242, 241, 0.65);
+  --glass-border: rgba(69, 123, 157, 0.3);
+}
+
+/* 11. Sunset / Atardecer */
+[data-theme="sunset"] {
+  --color-bg: #ffefd5;
+  --color-surface: rgba(255, 239, 213, 0.7);
+  --color-surface-alt: rgba(255, 222, 173, 0.6);
+  --color-border: rgba(255, 140, 0, 0.5);
+  --color-text: #8b4513;
+  --color-text-muted: #cd853f;
+  --color-primary: #ff8c00;
+  --color-primary-hover: #e68a00;
+  --color-success: #228b22;
+  --color-danger: #b22222;
+  --color-warning: #ffa500;
+  --color-link: #ff4500;
+  --glass-bg: rgba(255, 239, 213, 0.65);
+  --glass-border: rgba(255, 140, 0, 0.4);
+}
+
+/* 12. Monocromo */
+[data-theme="monocromo"] {
+  --color-bg: #f5f5f5;
+  --color-surface: rgba(245, 245, 245, 0.7);
+  --color-surface-alt: rgba(230, 230, 230, 0.6);
+  --color-border: rgba(128, 128, 128, 0.5);
+  --color-text: #333333;
+  --color-text-muted: #666666;
+  --color-primary: #555555;
+  --color-primary-hover: #444444;
+  --color-success: #444444;
+  --color-danger: #777777;
+  --color-warning: #999999;
+  --color-link: #222222;
+  --glass-bg: rgba(245, 245, 245, 0.65);
+  --glass-border: rgba(128, 128, 128, 0.4);
+}
+
+/* ========================================================================
+   Ajustes de daltonismo (sobre las variables de cada tema)
+   ======================================================================== */
+body[data-daltonism="deuteranopia"] {
+  --color-success: #1f6feb;
+  --color-danger: #ff6600;
+  --color-primary: #ff6600;
+}
+
+body[data-daltonism="protanopia"] {
+  --color-success: #2e7d32;
+  --color-danger: #d32f2f;
+  --color-primary: #ff7f00;
+  --color-link: #4a90e2;
+}
+
+body[data-daltonism="tritanopia"] {
+  --color-success: #7f5500;
+  --color-danger: #d32f2f;
+  --color-primary: #b388ff;
+  --color-link: #ff66ff;
+}
+
+body[data-daltonism="general"] {
+  --color-link: #1a56db;
+}

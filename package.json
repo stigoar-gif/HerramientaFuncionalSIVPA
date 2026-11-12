@@ -1,0 +1,20 @@
+{
+  "name": "arepastock",
+  "productName": "ArepaStock",
+  "version": "1.0.0",
+  "description": "Sistema de inventario y punto de venta (POS) para fabrica de arepas. Nucleo Python + shell Electron.",
+  "author": "ArepaStock",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "pack": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "@fortawesome/fontawesome-free": "^6.5.0",
+    "sweetalert2": "^11.10.0"
+  },
+  "keywords": ["arepas", "inventario", "pos", "python", "electron"],
+  "license": "MIT"
+}

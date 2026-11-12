@@ -1,0 +1,2 @@
+# Dependencias del nucleo Python de ArepaStock
+flask>=3.0.0
