@@ -22,11 +22,33 @@ def get_connection():
     return open_connection(config.DB_PATH)
 
 
+def _column_exists(conn: sqlite3.Connection, table: str, column: str) -> bool:
+    """Verifica si una columna existe en una tabla."""
+    row = conn.execute(
+        "PRAGMA table_info(%s)" % table
+    ).fetchall()
+    return any(r["name"] == column for r in row)
+
+
+def _apply_migration_v2_to_v3(conn: sqlite3.Connection) -> None:
+    """Agrega la columna 'imagen' a la tabla 'productos' si no existe."""
+    if not _column_exists(conn, "productos", "imagen"):
+        conn.execute("ALTER TABLE productos ADD COLUMN imagen TEXT")
+        conn.commit()
+
+
 def init_db(conn: sqlite3.Connection, current_version: int = config.DEFAULT_SCHEMA_VERSION) -> int:
     """Aplica las migraciones vigentes y retorna la versión activa."""
     conn.executescript(SCHEMA_FILE.read_text(encoding="utf-8"))
+
     row = conn.execute("SELECT version FROM schema_version WHERE id = 1").fetchone()
     version = int(row["version"]) if row is not None else 0
+
+    # Migración V1 -> V2: tabla notificaciones (ya en schema.sql, CREATE TABLE IF NOT EXISTS)
+    # Migración V2 -> V3: agregar columna imagen a productos
+    if version < 3:
+        _apply_migration_v2_to_v3(conn)
+
     if version < current_version:
         conn.execute(
             "INSERT INTO schema_version (id, version) VALUES (1, ?) "
