@@ -1,48 +1,87 @@
 /* ========================================================================
-   ArepaStock — Panel de notificaciones (con backend y polling)
+   ArepaStock — Panel lateral izquierdo de notificaciones (con backend y polling)
    ======================================================================== */
 
 const Notifications = {
-  panel: null,
+  sidebar: null,
   trigger: null,
   overlay: null,
-  container: null,
+  list: null,
   badge: null,
+  contadorTotal: null,
+  contadorNoLeidas: null,
+  estadoVacio: null,
   count: 0,
   pollingInterval: null,
   POLL_MS: 30000,
   filtroActual: 'todos', // todos | no-leidas | venta | stock_bajo | error | info
 
   init() {
-    this.panel = document.getElementById('notificaciones-panel');
+    this.sidebar = document.getElementById('notifications-sidebar');
     this.trigger = document.getElementById('btn-notificaciones');
     this.overlay = document.getElementById('overlay-notificaciones');
-    this.container = document.getElementById('lista-notificaciones');
+    this.list = document.getElementById('lista-notificaciones-sidebar');
     this.badge = document.getElementById('badge-notificaciones');
+    this.contadorTotal = document.getElementById('contador-total');
+    this.contadorNoLeidas = document.getElementById('contador-no-leidas');
+    this.estadoVacio = document.getElementById('estado-vacio-sidebar');
 
-    if (!this.panel || !this.trigger) return;
+    if (!this.sidebar || !this.trigger) return;
 
-    Dropdown.register('notificaciones', {
-      trigger: this.trigger,
-      panel: this.panel,
-      overlay: this.overlay,
-      onOpen: () => {
-        this.filtroActual = 'todos';
-        this.cargarYRenderizar();
-        posicionarDropdown('notificaciones-panel', 'btn-notificaciones', 'overlay-notificaciones');
-      },
-      onClose: () => {},
+    // Botón abrir/cerrar
+    this.trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggle();
     });
 
+    // Botón cerrar del panel
+    const btnCerrar = this.sidebar.querySelector('.btn-cerrar-sidebar');
+    if (btnCerrar) {
+      btnCerrar.addEventListener('click', () => this.close());
+    }
+
+    // Overlay cierra al hacer clic
+    if (this.overlay) {
+      this.overlay.addEventListener('click', () => this.close());
+    }
+
+    // Tecla Esc cierra
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.close();
+    });
+
+    // Cargar estado inicial y empezar polling
     this.cargarContador();
     this.iniciarPolling();
+  },
+
+  toggle() {
+    const abierta = !this.sidebar.hidden;
+    if (abierta) {
+      this.close();
+    } else {
+      this.open();
+    }
+  },
+
+  open() {
+    this.sidebar.hidden = false;
+    this.trigger.setAttribute('aria-expanded', 'true');
+    if (this.overlay) this.overlay.hidden = false;
+    this.cargarYRenderizar();
+  },
+
+  close() {
+    this.sidebar.hidden = true;
+    this.trigger.setAttribute('aria-expanded', 'false');
+    if (this.overlay) this.overlay.hidden = true;
   },
 
   iniciarPolling() {
     if (this.pollingInterval) clearInterval(this.pollingInterval);
     this.pollingInterval = setInterval(() => {
       this.cargarContador();
-      if (this.panel && !this.panel.hidden) {
+      if (this.sidebar && !this.sidebar.hidden) {
         this.cargarYRenderizar();
       }
     }, this.POLL_MS);
@@ -86,74 +125,24 @@ const Notifications = {
       this.badge.hidden = true;
       this.badge.setAttribute('aria-label', 'Sin notificaciones sin leer');
     }
+
+    // Actualizar contadores del panel lateral si están visibles
+    if (this.contadorTotal) this.contadorTotal.textContent = this.count;
+    // El contador de no leídas se actualiza al renderizar la lista
   },
 
   renderLista(notificaciones) {
-    if (!this.container) return;
-    this.container.innerHTML = '';
+    if (!this.list) return;
+    this.list.innerHTML = '';
 
     const total = notificaciones.length;
     const noLeidas = notificaciones.filter(n => !n.leida).length;
 
-    // ---------- Encabezado del panel ----------
-    const header = document.createElement('div');
-    header.className = 'notif-header glass';
-    header.innerHTML = `
-      <div class="notif-titulo-contenido">
-        <div class="notif-icon-header"><i class="fas fa-bell"></i></div>
-        <div class="notif-texto">
-          <h3>Notificaciones</h3>
-          <div class="notif-contador">
-            <span>${noLeidas} sin leer</span> ·
-            <span>${total} total</span>
-          </div>
-        </div>
-      </div>
-      <button type="button" class="btn-link btn-sm" id="btn-marcar-todas" aria-label="Marcar todas como leídas">
-        Marcar todas como leídas
-      </button>
-    `;
-    this.container.appendChild(header);
+    // Actualizar contadores del encabezado
+    if (this.contadorTotal) this.contadorTotal.textContent = total;
+    if (this.contadorNoLeidas) this.contadorNoLeidas.textContent = noLeidas;
 
-    // ---------- Filtros ----------
-    const filtros = document.createElement('div');
-    filtros.className = 'notif-filtros glass';
-    filtros.innerHTML = `
-      <div class="filtro-group" role="radiogroup" aria-label="Filtrar notificaciones">
-        <button type="button" class="filtro-btn ${this.filtroActual === 'todos' ? 'activo' : ''}" data-filtro="todos" role="radio" aria-pressed="${this.filtroActual === 'todos'}">
-          <span>Todos</span>
-          <span class="filtro-count">${total}</span>
-        </button>
-        <button type="button" class="filtro-btn ${this.filtroActual === 'no-leidas' ? 'activo' : ''}" data-filtro="no-leidas" role="radio" aria-pressed="${this.filtroActual === 'no-leidas'}">
-          <span>No leídas</span>
-          <span class="filtro-count">${noLeidas}</span>
-        </button>
-        <button type="button" class="filtro-btn ${this.filtroActual === 'venta' ? 'activo' : ''}" data-filtro="venta" role="radio" aria-pressed="${this.filtroActual === 'venta'}">
-          <span><i class="fas fa-shopping-cart"></i> Ventas</span>
-          <span class="filtro-count">${notificaciones.filter(n => n.tipo === 'venta').length}</span>
-        </button>
-        <button type="button" class="filtro-btn ${this.filtroActual === 'stock_bajo' ? 'activo' : ''}" data-filtro="stock_bajo" role="radio" aria-pressed="${this.filtroActual === 'stock_bajo'}">
-          <span><i class="fas fa-boxes"></i> Stock bajo</span>
-          <span class="filtro-count">${notificaciones.filter(n => n.tipo === 'stock_bajo').length}</span>
-        </button>
-        <button type="button" class="filtro-btn ${this.filtroActual === 'error' ? 'activo' : ''}" data-filtro="error" role="radio" aria-pressed="${this.filtroActual === 'error'}">
-          <span><i class="fas fa-times-circle"></i> Errores</span>
-          <span class="filtro-count">${notificaciones.filter(n => n.tipo === 'error').length}</span>
-        </button>
-        <button type="button" class="filtro-btn ${this.filtroActual === 'info' ? 'activo' : ''}" data-filtro="info" role="radio" aria-pressed="${this.filtroActual === 'info'}">
-          <span><i class="fas fa-info-circle"></i> Info</span>
-          <span class="filtro-count">${notificaciones.filter(n => n.tipo === 'info').length}</span>
-        </button>
-      </div>
-    `;
-    this.container.appendChild(filtros);
-
-    // Divider
-    const divider = document.createElement('div');
-    divider.className = 'notif-divider';
-    this.container.appendChild(divider);
-
-    // ---------- Lista filtrada ----------
+    // Filtrar
     let filtradas = notificaciones;
     if (this.filtroActual === 'no-leidas') {
       filtradas = notificaciones.filter(n => !n.leida);
@@ -161,19 +150,36 @@ const Notifications = {
       filtradas = notificaciones.filter(n => n.tipo === this.filtroActual);
     }
 
+    // Estado vacío
     if (filtradas.length === 0) {
-      this.container.appendChild(this.crearEstadoVacio(this.filtroActual));
+      if (this.estadoVacio) {
+        this.estadoVacio.hidden = false;
+        // Personalizar mensaje según filtro
+        const texto = this.estadoVacio.querySelector('.notif-vacio-texto');
+        if (texto) {
+          if (this.filtroActual === 'no-leidas') {
+            texto.textContent = 'Todas las notificaciones están leídas';
+          } else if (this.filtroActual === 'venta') {
+            texto.textContent = 'No hay ventas registradas';
+          } else if (this.filtroActual === 'stock_bajo') {
+            texto.textContent = 'Sin alertas de stock bajo';
+          } else if (this.filtroActual === 'error') {
+            texto.textContent = 'Sin errores reportados';
+          } else if (this.filtroActual === 'info') {
+            texto.textContent = 'Sin notificaciones de información';
+          } else {
+            texto.textContent = 'No tienes notificaciones recientes';
+          }
+        }
+      }
       return;
     }
 
-    const lista = document.createElement('ul');
-    lista.className = 'notif-list';
-    lista.setAttribute('role', 'menu');
-    lista.setAttribute('aria-label', 'Notificaciones');
+    if (this.estadoVacio) this.estadoVacio.hidden = true;
 
     for (const n of filtradas) {
       const item = document.createElement('li');
-      item.className = `notif-item ${n.leida ? 'leida' : 'no-leida'} glass`;
+      item.className = `notif-item-sidebar ${n.leida ? 'leida' : 'no-leida'} glass`;
       item.setAttribute('role', 'menuitem');
       item.setAttribute('tabindex', '0');
       item.dataset.id = n.id;
@@ -184,31 +190,31 @@ const Notifications = {
       const tipoColor = this.colorTipo(n.tipo);
 
       item.innerHTML = `
-        <div class="notif-badge-tipo" style="background: ${tipoColor}20; color: ${tipoColor};">
+        <div class="notif-badge-tipo-sidebar" style="background: ${tipoColor}20; color: ${tipoColor};">
           ${tipoEtiqueta}
         </div>
-        <div class="notif-contenido-principal">
-          <div class="notif-icon">${icono}</div>
-          <div class="notif-texto">
-            <div class="notif-titulo">${this.escapeHtml(n.titulo)}</div>
-            <div class="notif-body">${this.escapeHtml(n.mensaje)}</div>
-            <div class="notif-meta">
-              <span class="notif-time">${fecha}</span>
-              ${n.referencia ? `<span class="notif-ref">Ref: ${this.escapeHtml(n.referencia)}</span>` : ''}
+        <div class="notif-contenido-principal-sidebar">
+          <div class="notif-icon-sidebar">${icono}</div>
+          <div class="notif-texto-sidebar">
+            <div class="notif-titulo-sidebar">${this.escapeHtml(n.titulo)}</div>
+            <div class="notif-body-sidebar">${this.escapeHtml(n.mensaje)}</div>
+            <div class="notif-meta-sidebar">
+              <span class="notif-time-sidebar">${fecha}</span>
+              ${n.referencia ? `<span class="notif-ref-sidebar">Ref: ${this.escapeHtml(n.referencia)}</span>` : ''}
             </div>
           </div>
         </div>
-        <div class="notif-acciones">
-          <span class="notif-estado ${n.leida ? 'leida' : 'no-leida'}">
+        <div class="notif-acciones-sidebar">
+          <span class="notif-estado-sidebar ${n.leida ? 'leida' : 'no-leida'}">
             ${n.leida ? '<i class="fas fa-check"></i> Leída' : '<i class="fas fa-circle"></i> Nueva'}
           </span>
-          <button type="button" class="btn-icon btn-marcar-leida" data-id="${n.id}" aria-label="Marcar como leída">
+          <button type="button" class="btn-marcar-leida-sidebar" data-id="${n.id}" aria-label="Marcar como leída">
             <i class="fas fa-check"></i>
           </button>
         </div>
       `;
 
-      const btnLeida = item.querySelector('.btn-marcar-leida');
+      const btnLeida = item.querySelector('.btn-marcar-leida-sidebar');
       if (btnLeida) {
         btnLeida.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -217,69 +223,47 @@ const Notifications = {
       }
 
       item.addEventListener('click', (e) => {
-        if (!e.target.closest('.btn-marcar-leida') && !n.leida) {
+        if (!e.target.closest('.btn-marcar-leida-sidebar') && !n.leida) {
           this.marcarLeida(n.id);
         }
       });
 
-      lista.appendChild(item);
+      this.list.appendChild(item);
     }
 
-    this.container.appendChild(lista);
-
-    // ---------- Botón marcar todas ----------
-    const btnTodas = this.container.querySelector('#btn-marcar-todas');
-    if (btnTodas) {
-      btnTodas.addEventListener('click', () => this.marcarTodasLeidas());
-    }
-
-    // ---------- Eventos de filtros ----------
-    filtros.querySelectorAll('.filtro-btn').forEach(btn => {
+    // Eventos de filtros
+    const filtros = this.sidebar.querySelectorAll('.filtro-btn');
+    filtros.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const filtro = btn.dataset.filtro;
         this.filtroActual = filtro;
-        // Actualizar estado visual de botones
-        filtros.querySelectorAll('.filtro-btn').forEach(b => {
+        filtros.forEach(b => {
           b.classList.remove('activo');
           b.setAttribute('aria-pressed', 'false');
         });
         btn.classList.add('activo');
         btn.setAttribute('aria-pressed', 'true');
-        // Re-renderizar con nuevo filtro
-        this.renderLista(notificaciones);
+        this.cargarYRenderizar();
       });
     });
+
+    // Botón marcar todas como leídas
+    const btnTodas = this.sidebar.querySelector('#btn-marcar-todas-sidebar');
+    if (btnTodas) {
+      btnTodas.addEventListener('click', () => this.marcarTodasLeidas());
+    }
   },
 
-  crearEstadoVacio(filtro) {
-    const div = document.createElement('div');
-    div.className = 'notif-vacio glass';
-    let texto = 'No tienes notificaciones';
-    let subtitulo = '';
-    if (filtro === 'no-leidas') {
-      texto = 'Todas las notificaciones están leídas';
-      subtitulo = 'Revisa más tarde para nuevas actualizaciones';
-    } else if (filtro === 'venta') {
-      texto = 'No hay ventas registradas';
-      subtitulo = 'Las ventas aparecerán aquí automáticamente';
-    } else if (filtro === 'stock_bajo') {
-      texto = 'Sin alertas de stock bajo';
-      subtitulo = 'Todos los productos tienen stock suficiente';
-    } else if (filtro === 'error') {
-      texto = 'Sin errores reportados';
-      subtitulo = 'El sistema está funcionando correctamente';
-    } else if (filtro === 'info') {
-      texto = 'Sin notificaciones de información';
-      subtitulo = 'Los movimientos de inventario aparecerán aquí';
+  renderVacio() {
+    if (!this.list) return;
+    this.list.innerHTML = '';
+    if (this.estadoVacio) {
+      this.estadoVacio.hidden = false;
+      const texto = this.estadoVacio.querySelector('.notif-vacio-texto');
+      if (texto) texto.textContent = 'No se pudieron cargar las notificaciones';
     }
-    div.innerHTML = `
-      <div class="notif-vacio-icono">📭</div>
-      <div class="notif-vacio-contenido">
-        <div class="notif-vacio-titulo">${texto}</div>
-        ${subtitulo ? `<div class="notif-vacio-subtitulo">${subtitulo}</div>` : ''}
-      </div>
-    `;
-    return div;
+    if (this.contadorTotal) this.contadorTotal.textContent = '0';
+    if (this.contadorNoLeidas) this.contadorNoLeidas.textContent = '0';
   },
 
   async marcarLeida(id) {
@@ -289,7 +273,7 @@ const Notifications = {
       });
       if (!resp.ok) return;
       this.cargarContador();
-      if (this.panel && !this.panel.hidden) {
+      if (this.sidebar && !this.sidebar.hidden) {
         this.cargarYRenderizar();
       }
     } catch (e) {
@@ -304,7 +288,7 @@ const Notifications = {
       });
       if (!resp.ok) return;
       this.cargarContador();
-      if (this.panel && !this.panel.hidden) {
+      if (this.sidebar && !this.sidebar.hidden) {
         this.cargarYRenderizar();
       }
     } catch (e) {
@@ -312,6 +296,7 @@ const Notifications = {
     }
   },
 
+  // Método público para agregar notificación local (uso del UI)
   add(tipo, mensaje, titulo = 'Notificación') {
     this.count++;
     this.actualizarBadge();

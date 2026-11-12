@@ -36,7 +36,7 @@
       >
         <i class="fas fa-universal-access" aria-hidden="true"></i>
       </button>
-      <!-- Botón notificaciones -> dropdown con badge -->
+      <!-- Botón notificaciones -> abre panel lateral izquierdo -->
       <button
         id="btn-notificaciones"
         class="btn-icon glass notif-trigger position-relative"
@@ -45,7 +45,7 @@
         title="Notificaciones"
         aria-haspopup="true"
         aria-expanded="false"
-        aria-controls="notificaciones-panel"
+        aria-controls="notifications-sidebar"
       >
         <i class="fas fa-bell" aria-hidden="true"></i>
         <span id="badge-notificaciones" class="notif-badge">0</span>
@@ -53,14 +53,76 @@
     </div>
   </header>
 
-  <!-- ========== OVERLAYS (uno por dropdown) ========== -->
+  <!-- ========== OVERLAYS ========== -->
   <div id="overlay-accesibilidad" class="overlay" hidden></div>
   <div id="overlay-notificaciones" class="overlay" hidden></div>
+
+  <!-- ========== PANEL LATERAL IZQUIERDO: NOTIFICACIONES ========== -->
+  <aside
+    id="notifications-sidebar"
+    class="notifications-sidebar glass"
+    hidden
+    role="region"
+    aria-label="Notificaciones recientes"
+  >
+    <div class="sidebar-header glass">
+      <h2><i class="fas fa-bell"></i> Notificaciones</h2>
+      <button type="button" class="btn-icon btn-cerrar-sidebar" aria-label="Cerrar panel de notificaciones">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="sidebar-content">
+      <!-- Encabezado con contadores -->
+      <div class="notif-header-bar glass">
+        <div class="notif-contadores">
+          <span class="contador-total">Total: <span id="contador-total">0</span></span>
+          <span class="contador-no-leidas">Sin leer: <span id="contador-no-leidas">0</span></span>
+        </div>
+        <button type="button" class="btn-link btn-sm" id="btn-marcar-todas-sidebar" aria-label="Marcar todas como leídas">
+          Marcar todas como leídas
+        </button>
+      </div>
+      <div class="notif-divider"></div>
+      <!-- Filtros rápidos -->
+      <div class="notif-filtros-sidebar glass">
+        <div class="filtro-group" role="radiogroup" aria-label="Filtrar notificaciones">
+          <button type="button" class="filtro-btn activo" data-filtro="todos" role="radio" aria-pressed="true">
+            <span>Todos</span>
+          </button>
+          <button type="button" class="filtro-btn" data-filtro="no-leidas" role="radio" aria-pressed="false">
+            <span>No leídas</span>
+          </button>
+          <button type="button" class="filtro-btn" data-filtro="venta" role="radio" aria-pressed="false">
+            <span><i class="fas fa-shopping-cart"></i> Ventas</span>
+          </button>
+          <button type="button" class="filtro-btn" data-filtro="stock_bajo" role="radio" aria-pressed="false">
+            <span><i class="fas fa-boxes"></i> Stock bajo</span>
+          </button>
+          <button type="button" class="filtro-btn" data-filtro="error" role="radio" aria-pressed="false">
+            <span><i class="fas fa-times-circle"></i> Errores</span>
+          </button>
+          <button type="button" class="filtro-btn" data-filtro="info" role="radio" aria-pressed="false">
+            <span><i class="fas fa-info-circle"></i> Info</span>
+          </button>
+        </div>
+      </div>
+      <div class="notif-divider"></div>
+      <!-- Lista de notificaciones -->
+      <ul id="lista-notificaciones-sidebar" class="notif-list-sidebar" role="menu" aria-label="Notificaciones recientes">
+        <!-- Las notificaciones se insertan aquí dinámicamente -->
+      </ul>
+      <!-- Estado vacío (se muestra si no hay notificaciones) -->
+      <div id="estado-vacio-sidebar" class="notif-vacio-sidebar glass" hidden>
+        <div class="notif-vacio-icono">📭</div>
+        <div class="notif-vacio-texto">No tienes notificaciones recientes</div>
+      </div>
+    </div>
+  </aside>
 
   <!-- ========== CUERPO ========== -->
   <div class="app-body glass">
 
-    <!-- ========== SIDEBAR ========== -->
+    <!-- ========== SIDEBAR (navegación principal) ========== -->
     <aside class="sidebar glass" id="sidebar">
       <nav aria-label="Navegación principal">
         <ul class="nav-list">
@@ -171,11 +233,8 @@
     <p id="footer-status">ArepaStock · API local: 127.0.0.1:8000 · Glassmode activado</p>
   </footer>
 
-  <!-- ========== DROPDOWN: ACCESIBILIDAD (anclado al header) ========== -->
+  <!-- ========== DROPDOWN: ACCESIBILIDAD ========== -->
   <div id="a11y-panel" class="dropdown-panel glass" hidden role="menu" aria-labelledby="a11y-panel-title"></div>
-
-  <!-- ========== DROPDOWN: NOTIFICACIONES (anclado al header) ========== -->
-  <div id="notificaciones-panel" class="dropdown-panel glass" hidden role="region" aria-label="Notificaciones"></div>
 
   <script src="../../node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
   <script src="js/api.js"></script>
