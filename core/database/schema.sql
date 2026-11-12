@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS productos (
     descripcion TEXT NOT NULL DEFAULT '',
     stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
     precio_unitario REAL NOT NULL CHECK (precio_unitario >= 0),
+    imagen TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -67,9 +68,9 @@ CREATE INDEX IF NOT EXISTS idx_venta_items_venta ON venta_items (venta_id);
 CREATE INDEX IF NOT EXISTS idx_notificaciones_creada_en ON notificaciones (creada_en DESC);
 CREATE INDEX IF NOT EXISTS idx_notificaciones_leida ON notificaciones (leida);
 
-INSERT OR IGNORE INTO productos (sku, nombre, descripcion, stock, precio_unitario) VALUES
-    ('ARE-QUE-001', 'Arepa rellena de queso', 'Arepa rellena con queso', 0, 3.50),
-    ('ARE-ALI-002', 'Arepa aliñada', 'Arepa aliñada', 0, 2.50),
-    ('ARE-MOT-003', 'Arepa de mote', 'Arepa de mote', 0, 3.00),
-    ('TOR-MOT-004', 'Tortillas de maíz de mote', 'Tortilla de maíz de mote', 0, 1.20),
-    ('ARE-TRA-005', 'Arepa tradicional de maíz trillado', 'Arepa tradicional', 0, 2.80);
+INSERT OR IGNORE INTO productos (sku, nombre, descripcion, stock, precio_unitario, imagen) VALUES
+    ('ARE-QUE-001', 'Arepa rellena de queso', 'Arepa rellena con queso', 0, 3.50, 'images/productos/are-que-001.svg'),
+    ('ARE-ALI-002', 'Arepa aliñada', 'Arepa aliñada', 0, 2.50, 'images/productos/are-ali-002.svg'),
+    ('ARE-MOT-003', 'Arepa de mote', 'Arepa de mote', 0, 3.00, 'images/productos/are-mot-003.svg'),
+    ('TOR-MOT-004', 'Tortillas de maíz de mote', 'Tortilla de maíz de mote', 0, 1.20, 'images/productos/tor-mot-004.svg'),
+    ('ARE-TRA-005', 'Arepa tradicional de maíz trillado', 'Arepa tradicional', 0, 2.80, 'images/productos/are-tra-005.svg');

@@ -38,6 +38,7 @@ class ProductosService:
             raise exceptions.ValidacionError("El nombre es obligatorio")
         stock = int(data.get("stock") or 0)
         precio_unitario = float(data.get("precio_unitario") or 0)
+        imagen = data.get("imagen") or ""
         producto = self.repository.crear(
             {
                 "sku": sku,
@@ -45,6 +46,7 @@ class ProductosService:
                 "descripcion": data.get("descripcion") or "",
                 "stock": stock,
                 "precio_unitario": precio_unitario,
+                "imagen": imagen,
             }
         )
         self._notificar_stock_bajo(producto)
@@ -63,6 +65,8 @@ class ProductosService:
             producto.stock = int(data.get("stock") or 0)
         if data.get("precio_unitario") is not None:
             producto.precio_unitario = float(data.get("precio_unitario") or 0)
+        if data.get("imagen") is not None:
+            producto.imagen = str(data.get("imagen") or "")
         producto = self.repository.actualizar(sku, producto)
         self._notificar_stock_bajo(producto)
         return producto

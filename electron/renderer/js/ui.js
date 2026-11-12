@@ -81,8 +81,10 @@ async function cargarProductos() {
     tbody.innerHTML = '';
     for (const producto of productos) {
       const stockBajo = producto.stock <= 3;
+      const imagenUrl = producto.imagen ? `../../${producto.imagen}` : '../../images/productos/default.svg';
       const tr = document.createElement('tr');
       tr.innerHTML = `
+        <td><img src="${imagenUrl}" alt="${escapeHtml(producto.nombre)}" class="product-img" onerror="this.src='../../images/productos/default.svg'"></td>
         <td><code>${escapeHtml(producto.sku)}</code></td>
         <td>${escapeHtml(producto.nombre)}</td>
         <td>${escapeHtml(producto.descripcion || '-')}</td>
@@ -128,16 +130,18 @@ async function crearProducto() {
       '<input id="swal-nombre" class="swal2-input" placeholder="Nombre del producto">'+
       '<input id="swal-desc" class="swal2-input" placeholder="Descripción">'+
       '<input id="swal-stock" class="swal2-input" type="number" min="0" placeholder="Stock inicial">'+
-      '<input id="swal-precio" class="swal2-input" type="number" min="0" step="0.01" placeholder="Precio unitario">',
+      '<input id="swal-precio" class="swal2-input" type="number" min="0" step="0.01" placeholder="Precio unitario">'+
+      '<input id="swal-imagen" class="swal2-input" placeholder="Ruta de imagen (ej. images/productos/mi-img.svg)">',
     focusConfirm: false,
     customClass: { popup: 'glass swal2-popup' },
-    preConfirm: () => ({
-      sku: document.getElementById('swal-sku').value,
-      nombre: document.getElementById('swal-nombre').value,
-      descripcion: document.getElementById('swal-desc').value,
-      stock: parseInt(document.getElementById('swal-stock').value) || 0,
-      precio_unitario: parseFloat(document.getElementById('swal-precio').value) || 0,
-    }),
+      preConfirm: () => ({
+        sku: document.getElementById('swal-sku').value,
+        nombre: document.getElementById('swal-nombre').value,
+        descripcion: document.getElementById('swal-desc').value,
+        stock: parseInt(document.getElementById('swal-stock').value) || 0,
+        precio_unitario: parseFloat(document.getElementById('swal-precio').value) || 0,
+        imagen: document.getElementById('swal-imagen').value || '',
+      }),
   });
   if (!form) return;
   if (!form.sku || !form.nombre) {
@@ -166,7 +170,8 @@ async function editarProducto(sku) {
         '<input id="swal-nombre" class="swal2-input" value="'+escapeHtml(p.nombre)+'" placeholder="Nombre">'+
         '<input id="swal-desc" class="swal2-input" value="'+escapeHtml(p.descripcion||'')+'" placeholder="Descripción">'+
         '<input id="swal-stock" class="swal2-input" type="number" min="0" value="'+p.stock+'" placeholder="Stock">'+
-        '<input id="swal-precio" class="swal2-input" type="number" min="0" step="0.01" value="'+p.precio_unitario+'" placeholder="Precio">',
+        '<input id="swal-precio" class="swal2-input" type="number" min="0" step="0.01" value="'+p.precio_unitario+'" placeholder="Precio">'+
+        '<input id="swal-imagen" class="swal2-input" value="'+escapeHtml(p.imagen||'')+'" placeholder="Ruta de imagen">',
       focusConfirm: false,
       customClass: { popup: 'glass swal2-popup' },
       preConfirm: () => ({
@@ -174,6 +179,7 @@ async function editarProducto(sku) {
         descripcion: document.getElementById('swal-desc').value,
         stock: parseInt(document.getElementById('swal-stock').value) || 0,
         precio_unitario: parseFloat(document.getElementById('swal-precio').value) || 0,
+        imagen: document.getElementById('swal-imagen').value || '',
       }),
     });
     if (!form) return;
@@ -280,8 +286,9 @@ async function cargarProductosParaPOS() {
       const disabled = producto.stock <= 0 ? 'disabled' : '';
       const card = document.createElement('article');
       card.className = 'pos-product-card glass';
+      const imagenUrl = producto.imagen ? `../../${producto.imagen}` : '../../images/productos/default.svg';
       card.innerHTML = `
-        <i class="fas fa-cookie-bite" aria-hidden="true"></i>
+        <img src="${imagenUrl}" alt="${escapeHtml(producto.nombre)}" class="pos-product-img" onerror="this.src='../../images/productos/default.svg'">
         <strong>${escapeHtml(producto.nombre)}</strong>
         <div class="stock">${escapeHtml(producto.sku)} · stock ${producto.stock}</div>
         <div class="precio">$${Number(producto.precio_unitario).toFixed(2)}</div>

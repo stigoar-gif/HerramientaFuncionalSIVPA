@@ -13,6 +13,7 @@ class Producto:
     descripcion: str = ""
     stock: int = 0
     precio_unitario: float = 0.0
+    imagen: str = ""
     id: int = field(default=0, repr=False)
 
 

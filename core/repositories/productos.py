@@ -15,7 +15,7 @@ class ProductoRepository:
     def listar(self) -> list[Producto]:
         """Retorna todos los productos ordenados por SKU."""
         rows = self.db.execute(
-            "SELECT id, sku, nombre, descripcion, stock, precio_unitario "
+            "SELECT id, sku, nombre, descripcion, stock, precio_unitario, imagen "
             "FROM productos ORDER BY sku"
         ).fetchall()
         return [self._a_entidad(row) for row in rows]
@@ -23,7 +23,7 @@ class ProductoRepository:
     def obtener(self, sku: str) -> Producto:
         """Retorna un producto por su SKU o lanza error de dominio."""
         row = self.db.execute(
-            "SELECT id, sku, nombre, descripcion, stock, precio_unitario "
+            "SELECT id, sku, nombre, descripcion, stock, precio_unitario, imagen "
             "FROM productos WHERE sku = ?",
             (sku,),
         ).fetchone()
@@ -41,11 +41,12 @@ class ProductoRepository:
             raise exceptions.ValidacionError("El nombre es obligatorio")
         stock = int(data.get("stock") or 0)
         precio_unitario = float(data.get("precio_unitario") or 0)
+        imagen = data.get("imagen") or ""
         try:
             self.db.execute(
-                "INSERT INTO productos (sku, nombre, descripcion, stock, precio_unitario) "
-                "VALUES (?, ?, ?, ?, ?)",
-                (sku, nombre, data.get("descripcion") or "", stock, precio_unitario),
+                "INSERT INTO productos (sku, nombre, descripcion, stock, precio_unitario, imagen) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (sku, nombre, data.get("descripcion") or "", stock, precio_unitario, imagen),
             )
             self.db.commit()
         except sqlite3.IntegrityError as exc:
@@ -56,9 +57,9 @@ class ProductoRepository:
     def actualizar(self, sku: str, producto: Producto) -> Producto:
         """Actualiza los campos editables de un producto."""
         self.db.execute(
-            "UPDATE productos SET nombre = ?, descripcion = ?, stock = ?, precio_unitario = ? "
+            "UPDATE productos SET nombre = ?, descripcion = ?, stock = ?, precio_unitario = ?, imagen = ? "
             "WHERE sku = ?",
-            (producto.nombre, producto.descripcion, producto.stock, producto.precio_unitario, sku),
+            (producto.nombre, producto.descripcion, producto.stock, producto.precio_unitario, producto.imagen, sku),
         )
         self.db.commit()
         return self.obtener(sku)
@@ -72,5 +73,6 @@ class ProductoRepository:
             descripcion=row["descripcion"],
             stock=int(row["stock"]),
             precio_unitario=float(row["precio_unitario"]),
+            imagen=row["imagen"] or "",
             id=int(row["id"]),
         )

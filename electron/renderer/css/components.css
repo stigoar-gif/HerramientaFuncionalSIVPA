@@ -1423,3 +1423,30 @@ code {
     width: 320px;
   }
 }
+
+/* ---------- Imágenes de productos ---------- */
+.product-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.pos-product-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: var(--space-8);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+/* Ajustar tabla de productos para incluir columna de imagen */
+.table-products th:nth-child(1),
+.table-products td:nth-child(1) {
+  width: 50px;
+  text-align: center;
+}
